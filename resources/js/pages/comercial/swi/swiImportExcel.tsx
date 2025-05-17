@@ -61,49 +61,88 @@ const swiImportExcel = () => {
   }
 
   const sendData = () => {
-    
+
     if (datos.length == 0) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'No se ha cargado ningun archivo excel!.',
-          });
-          return;
-        }
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'No se ha cargado ningun archivo excel!.',
+      });
+      return;
+    }
 
-      axios.post('swi', datos)
-        .then(response => {
-          console.log('Respuesta:', response.data);
-          Swal.fire({
-            icon: 'success',
-            title: '¡Éxito!',
-            text: 'Los datos se insertaron correctamente.',
-          }).then(() => {
-            // Redirige después de hacer clic en OK
-            window.location.href = '/swi';
-          });
-
-
-
-        })
-        .catch(error => {
-          console.error('Error al enviar los datos:', error);
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Ocurrió un error al insertar los datos.',
-          });
+    axios.post('swi', datos)
+      .then(response => {
+        console.log('Respuesta:', response.data);
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'Los datos se insertaron correctamente.',
+        }).then(() => {
+          // Redirige después de hacer clic en OK
+          window.location.href = '/swi';
         });
-    
-   
+
+
+
+      })
+      .catch(error => {
+        console.error('Error al enviar los datos:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Ocurrió un error al insertar los datos.',
+        });
+      });
+
+
     console.log('datos', datos)
   }
+
+  const headers = [
+    { title: "id", type: "Texto" },
+    { title: "mes", type: "Texto" },
+    { title: "ano", type: "Texto" },
+    { title: "cod_empresa", type: "Texto" },
+    { title: "nomb_empresa", type: "Texto" },
+    { title: "cod_dep", type: "Texto" },
+    { title: "nomb_dep", type: "Texto" },
+    { title: "cod_municipio", type: "Texto" },
+    { title: "nomb_municipio", type: "Texto" },
+    { title: "grupo", type: "Texto" },
+    { title: "zona", type: "Texto" },
+    { title: "cant_vend_d_punto_vent_kg", type: "Texto" },
+    { title: "cant_vend_tanq_D_kg", type: "Texto" },
+    { title: "cant_tot_vend_min_k", type: "Texto" },
+    { title: "granel", type: "Texto" },
+    { title: "cilindros", type: "Texto" },
+    { title: "suma", type: "Texto" }
+  ];
+
+  const downloadExcel = () => {
+    // Crea un nuevo libro de trabajo
+    const wb = XLSX.utils.book_new();
+
+    // Prepara la fila de encabezados con solo los nombres de las columnas
+    const headerRow = headers.map(header => header.title);
+
+    // Crea una hoja de trabajo con los encabezados
+    const ws = XLSX.utils.aoa_to_sheet([headerRow]);
+
+    // Agrega la hoja de trabajo al libro de trabajo
+    XLSX.utils.book_append_sheet(wb, ws, "sui");
+
+    // Genera el archivo Excel y permite la descarga
+    XLSX.writeFile(wb, "plantilla_sui.xlsx");
+  };
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Swi Excel" />
       <div className="border-b-2 p-3">
-
+        <div className='border p-5 mb-5'>
+          <button className='bg-lime-700 text-white p-3 rounded-md font-black cursor-pointer' onClick={downloadExcel}>Descargar Plantilla Excel</button>
+        </div>
         <h3 className='text-2xl'>Cargar Excel</h3>
 
         {/* form */}

@@ -16,19 +16,48 @@ class SwiMainController extends Controller
 
       ////////////////////////////////
       $swiContent = SwiMain::query();
+      
 
       # Capturing the total count before applying filters
       $totalCount = $swiContent->count();
 
       if ($request->filled('search')) {
-         $search = $request->search;
+         $search     = $request->search;
+         $searchyear = $request->searchyear; 
+         $searchmesSui = $request->searchmesSui; 
 
          $swiContent->where(
             fn($query) =>
-            $query->where('mes', 'like', "%{$search}%")
-               ->orWhere('nomb_municipio', 'like', "%{$search}%")
+            $query->where('ano', '=', "$searchyear")            
+               ->where('nomb_dep', 'like', "%{$search}%")
+               ->where('mes', 'like', "%{$searchmesSui}%")
+              
 
          );
+      }elseif($request->filled('searchyear')) {         
+         $searchyear = $request->searchyear; 
+
+         $swiContent->where(
+            fn($query) =>
+            $query->where('ano', '=', "$searchyear")           
+                         
+
+         );
+      }
+      elseif ($request->filled('searchmesSui') && $request->filled('searchyearMes') ) {         
+         $searchmesSui = $request->searchmesSui; 
+         $searchyearMes   = $request->searchyearMes; 
+
+         $swiContent->where(
+            fn($query) =>
+            $query->where('mes', '=', "$searchmesSui")           
+            ->where('ano', '=', "$searchyearMes")       
+         );
+      }
+      else{
+         $swiContent->where(
+            fn($query) =>
+            $query->where('ano', '=', "2025"));
       }
 
       # Filtered Count

@@ -1,9 +1,19 @@
+import InputError from "@/components/input-error";
+import { Label } from "@/components/ui/label";
 import { Pagination } from "@/components/ui/pagination";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import AppLayout from "@/layouts/app-layout";
 import { BreadcrumbItem } from "@/types";
 import { Button, Input } from "@headlessui/react";
 import { Head,Link, router,useForm } from "@inertiajs/react";
 import { CirclePlusIcon, Eye, Pencil, Trash2, X } from "lucide-react";
+import { useState } from "react";
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -52,8 +62,11 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
         perPage: filters.perPage || '10',
     });
     
-    console.log(data)
+    console.log(data) 
     console.log(records.data)
+    const [year,setYear] = useState('2025');
+    const [mesSui,setmesSui] = useState('');
+
     // Handle Change for the Search Input
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -61,6 +74,8 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
 
         const queryString = {
             ...(value && { search: value }),
+            ...(year && { searchyear: year }),
+            ...(mesSui && { searchmesSui: mesSui }),
             ...(data.perPage && { perPage: data.perPage }),
         };
 
@@ -70,20 +85,52 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
         });
     };
 
-    // To Reset Applied Filter
+    const handleSelectChangeYear =(value)=>{
+      
+        setYear(value)
+        const queryString = {
+            ...(value && { searchyear: value }),
+            ...(data.perPage && { perPage: data.perPage }),
+        };
+
+        router.get(route('swi.index'), queryString, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+     
+    }
+
+    const handleSelectChangeMes =(value)=>{
+      
+        setmesSui(value)
+        const queryString = {
+            ...(value && { searchmesSui: value }),
+            ...(year && { searchyearMes: year }),
+            ...(data.perPage && { perPage: data.perPage }),
+        };
+
+        router.get(route('swi.index'), queryString, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+     
+    }
+
     const handleReset = () => {
         setData('search', '');
         //pagination
         setData('perPage', '10');
-
-        // router.get(
-        //     route('swi.index'),
-        //     {},
-        //     {
-        //         preserveState: true,
-        //         preserveScroll: true,
-        //     },
-        // );
+        setYear('2025');
+        setmesSui('');
+        document.getElementById('buscar').value = ''
+        router.get(
+            route('swi.index'),
+            {},
+            {
+                preserveState: true,
+                preserveScroll: true,
+            },
+        );
     };
 
     // Handle Per Page Change
@@ -114,6 +161,7 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
                         className="h-10 w-1/3 border-input file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground flex min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                         placeholder="Buscar ..."
                         name="search"
+                        id="buscar"
                     />
 
                     <Button onClick={handleReset}  className="flex items-center justify-center h-10 w-10 cursor-pointer bg-gray-700 text-white place-content-center hover:bg-red-500 rounded">
@@ -122,13 +170,53 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
 
                     {/* Add Project button */}
                     <div className="ml-auto">
-                        {/* <Link
-                            className="text-md flex cursor-pointer items-center rounded-lg bg-pink-600 px-4 py-2 text-white hover:opacity-90"
-                            type="button"
-                            href={route('projects.create')}
-                        >
-                            <CirclePlusIcon className="me-2" /> Nuevo
-                        </Link> */}
+                      <div className="flex flex-col space-y-1.5">
+                            <Label htmlFor="framework">Año</Label>
+                            <Select onValueChange={handleSelectChangeYear} value={year} >
+                                <SelectTrigger id="framework">
+                                    <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent position="popper">
+                                    <SelectItem value="2015">2015</SelectItem>
+                                    <SelectItem value="2016">2016</SelectItem>
+                                    <SelectItem value="2017">2017</SelectItem>
+                                    <SelectItem value="2018">2018</SelectItem>
+                                    <SelectItem value="2019">2019</SelectItem>
+                                    <SelectItem value="2020">2020</SelectItem>
+                                    <SelectItem value="2021">2021</SelectItem>
+                                    <SelectItem value="2022">2022</SelectItem>
+                                    <SelectItem value="2023">2023</SelectItem>
+                                    <SelectItem value="2024">2024</SelectItem>
+                                    <SelectItem value="2025">2025</SelectItem>
+                                </SelectContent>
+                            </Select>
+                    
+                        </div>
+                    </div>
+                    <div className="ml-auto">
+                      <div className="flex flex-col space-y-1.5">
+                            <Label htmlFor="framework">Mes</Label>
+                            <Select onValueChange={handleSelectChangeMes} value={mesSui} >
+                                <SelectTrigger id="framework">
+                                    <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent position="popper">
+                                    <SelectItem value="Ene">Ene</SelectItem>
+                                    <SelectItem value="Feb">Feb</SelectItem>
+                                    <SelectItem value="Mar">Mar</SelectItem>
+                                    <SelectItem value="Abr">Abr</SelectItem>
+                                    <SelectItem value="May">May</SelectItem>
+                                    <SelectItem value="Jun">Jun</SelectItem>
+                                    <SelectItem value="Jul">Jul</SelectItem>
+                                    <SelectItem value="Ago">Ago</SelectItem>
+                                    <SelectItem value="Sep">Sep</SelectItem>
+                                    <SelectItem value="Oct">Oct</SelectItem>
+                                    <SelectItem value="Nov">Nov</SelectItem>
+                                    <SelectItem value="Dic">Dic</SelectItem>
+                                </SelectContent>
+                            </Select>
+                    
+                        </div>
                     </div>
                 </div>
                 <h1 className="text-2xl text-center">Datos de la bd</h1>

@@ -52,7 +52,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
             //     icon: LayoutGrid,
             // },
             {
-                title: 'Swi',
+                title: 'Sui',
                 href: '/swi',
                 icon: LayoutGrid,
             },
