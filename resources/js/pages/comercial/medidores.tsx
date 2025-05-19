@@ -35,7 +35,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Medidores({ ...props }) {
     const { project,isEdit  } = usePage().props
     // const [nombre, setNombre] = useState('');
-    // console.log(props);
+     console.log(props);
+    console.log(project);
+    console.log(isEdit);
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: `${ isEdit ? 'Update' : 'Create'} Project`,

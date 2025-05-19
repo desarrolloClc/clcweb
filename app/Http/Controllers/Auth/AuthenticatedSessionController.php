@@ -39,6 +39,10 @@ class AuthenticatedSessionController extends Controller
               return redirect()->intended(route('swi.index', absolute: false));
         }
 
+        if($rol[0] == 'talento_humano'){
+              return redirect()->intended(route('asistencia.index', absolute: false));
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

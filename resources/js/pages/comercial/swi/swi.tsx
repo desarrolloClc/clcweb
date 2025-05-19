@@ -30,10 +30,22 @@ interface LinkProps {
 
 interface Project {
     id: number;
-    nombre: string;
-    description: string;
-    edad: number;
-    edad2: string;    
+    mes: string;
+    ano: string;
+    cod_empresa: string;
+    nomb_empresa: string;    
+    cod_dep: string;
+    nomb_dep: string;
+    cod_municipio: string;
+    nomb_municipio: string;  
+    grupo: string;
+    zona: string;
+    cant_vend_d_punto_vent_kg: number;
+    cant_vend_tanq_D_kg: number;  
+    cant_tot_vend_min_k: number;   
+    granel: number;
+    cilindros: number;  
+    suma: number;  
 }
 
 interface ProjectPagination {
@@ -85,7 +97,7 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
         });
     };
 
-    const handleSelectChangeYear =(value)=>{
+    const handleSelectChangeYear =(value:string)=>{
       
         setYear(value)
         const queryString = {
@@ -100,7 +112,7 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
      
     }
 
-    const handleSelectChangeMes =(value)=>{
+    const handleSelectChangeMes =(value:string)=>{
       
         setmesSui(value)
         const queryString = {
@@ -122,7 +134,11 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
         setData('perPage', '10');
         setYear('2025');
         setmesSui('');
-        document.getElementById('buscar').value = ''
+        const buscarElement = document.getElementById('buscar');
+        if (buscarElement !== null) {
+        (buscarElement as HTMLInputElement).value = '';
+        }
+
         router.get(
             route('swi.index'),
             {},
@@ -142,7 +158,7 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
             ...(value && { perPage: value }),
         };
 
-        router.get(route('products.index'), queryString, {
+        router.get(route('swi.index'), queryString, {
             preserveState: true,
             preserveScroll: true,
         });
@@ -164,8 +180,8 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
                         id="buscar"
                     />
 
-                    <Button onClick={handleReset}  className="flex items-center justify-center h-10 w-10 cursor-pointer bg-gray-700 text-white place-content-center hover:bg-red-500 rounded">
-                        <X size={20} />
+                    <Button onClick={handleReset}  className="flex items-center justify-center h-10 w-30 cursor-pointer bg-gray-700 text-white place-content-center hover:bg-indigo-900 rounded">
+                        Borrar filtros
                     </Button>
 
                     {/* Add Project button */}
@@ -225,8 +241,8 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
                         <thead>
                             <tr className="bg-pink-600 text-white">
                                 {/* <th className="w-25 border p-2">#</th> */}
-                                <th className="w-25 border p-2">mes</th>
-                                <th className="w-25 border p-2">año</th>                        
+                                <th className="w-25 border p-2">Mes</th>
+                                <th className="w-25 border p-2">Año</th>                        
                                 <th className="border p-2">Cod. Empresa</th>
                                 <th className="border p-2">Empresa</th>
                                 <th className="border p-2">Cod. Dep</th>
@@ -234,13 +250,13 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
                                 <th className="border p-2">Cod. Municipio</th>
                                 <th className="border p-2">Municipio</th>
                                 <th className="border p-2">grupo</th>
-                                <th className="border p-2">zona</th>
-                                <th className="border p-2">venta_punto_venta_kg</th>
-                                <th className="border p-2">venta_tanque_kg</th>
-                                <th className="border p-2">venta_minorista_kg</th>
-                                <th className="border p-2">granel</th>
-                                <th className="border p-2">cilindros</th>
-                                <th className="border p-2">suma</th>
+                                <th className="border p-2">Zona</th>
+                                <th className="border p-2">Venta_punto_venta_kg</th>
+                                <th className="border p-2">Venta_tanque_kg</th>
+                                <th className="border p-2">Venta_minorista_kg</th>
+                                <th className="border p-2">Granel</th>
+                                <th className="border p-2">Cilindros</th>
+                                <th className="border p-2">Suma</th>
                                
                             </tr>
                         </thead>

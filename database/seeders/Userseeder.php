@@ -49,21 +49,21 @@ class Userseeder extends Seeder
     //     $userMedidor->assignRole($roleMedidor);
     //     $roleMedidor->syncPermissions(['ver medidores']);
 
-      Permission::create(['name' => 'ver swi']);
+      Permission::create(['name' => 'ver asistencia']);
 
-        $userSwi = User::query()->create([
-            'name'=>'Jhon Kerly',
-            'email'=>'jmosquera@clcgas.com.co',
+        $userTalentoHumano = User::query()->create([
+            'name'=>'Adriana Maria Henao Valencia',
+            'email'=>'ahenao@clcgas.com.co',
             'password'=>'12345678',
             'email_verified_at'=>now()
         ]);
 
-        $roleSwi = Role::create(['name'=>'swi']);
-        $userSwi->assignRole($roleSwi);
-        $roleSwi->syncPermissions(['ver swi']);
+        $roleTalentoHumano = Role::create(['name'=>'talento_humano']);
+        $userTalentoHumano->assignRole($roleTalentoHumano);
+        $roleTalentoHumano->syncPermissions(['ver asistencia']);
 
         $role = Role::findByName('superAdmin');
-        $role->givePermissionTo('ver swi');
+        $role->givePermissionTo('ver asistencia');
 
       
 

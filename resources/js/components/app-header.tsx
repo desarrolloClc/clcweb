@@ -62,7 +62,17 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                 icon: LayoutGrid,
             },
         ];
-
+    }else if (user.roles[0] == "talento_humano") {
+          navMain = [
+         
+            {
+                title: 'Asistencia',
+                href: '/asistencia',
+                icon: LayoutGrid,
+            },
+             
+        ];
+    
      }else if (user.roles[0] == "superAdmin") {
         navMain = [
             {
@@ -78,6 +88,11 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
              {
                 title: 'Swi',
                 href: '/swi',
+                icon: LayoutGrid,
+            },
+             {
+                title: 'Asistencia',
+                href: '/asistencia',
                 icon: LayoutGrid,
             },
             {

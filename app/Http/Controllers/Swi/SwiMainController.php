@@ -16,48 +16,48 @@ class SwiMainController extends Controller
 
       ////////////////////////////////
       $swiContent = SwiMain::query();
-      
+
 
       # Capturing the total count before applying filters
       $totalCount = $swiContent->count();
 
       if ($request->filled('search')) {
          $search     = $request->search;
-         $searchyear = $request->searchyear; 
-         $searchmesSui = $request->searchmesSui; 
+         $searchyear = $request->searchyear;
+         $searchmesSui = $request->searchmesSui;
 
          $swiContent->where(
             fn($query) =>
-            $query->where('ano', '=', "$searchyear")            
-               ->where('nomb_dep', 'like', "%{$search}%")
+            $query->where('ano', '=', "$searchyear")
                ->where('mes', 'like', "%{$searchmesSui}%")
-              
-
+               ->where(function ($query) use ($search) {
+                  $query->where('nomb_dep', 'like', "%{$search}%")
+                     ->orWhere('nomb_empresa', 'like', "%{$search}%");
+               })
          );
-      }elseif($request->filled('searchyear')) {         
-         $searchyear = $request->searchyear; 
+      } elseif ($request->filled('searchyear')) {
+         $searchyear = $request->searchyear;
 
          $swiContent->where(
             fn($query) =>
-            $query->where('ano', '=', "$searchyear")           
-                         
+            $query->where('ano', '=', "$searchyear")
+
 
          );
-      }
-      elseif ($request->filled('searchmesSui') && $request->filled('searchyearMes') ) {         
-         $searchmesSui = $request->searchmesSui; 
-         $searchyearMes   = $request->searchyearMes; 
+      } elseif ($request->filled('searchmesSui') && $request->filled('searchyearMes')) {
+         $searchmesSui = $request->searchmesSui;
+         $searchyearMes   = $request->searchyearMes;
 
          $swiContent->where(
             fn($query) =>
-            $query->where('mes', '=', "$searchmesSui")           
-            ->where('ano', '=', "$searchyearMes")       
+            $query->where('mes', '=', "$searchmesSui")
+               ->where('ano', '=', "$searchyearMes")
          );
-      }
-      else{
+      } else {
          $swiContent->where(
             fn($query) =>
-            $query->where('ano', '=', "2025"));
+            $query->where('ano', '=', "2025")
+         );
       }
 
       # Filtered Count
@@ -134,7 +134,7 @@ class SwiMainController extends Controller
    public function store(Request $request)
    {
       $datos = $request->all();
-    
+
       foreach ($datos as $item) {
          $registro = [
             'mes' => (string) $item['mes'],
@@ -146,23 +146,23 @@ class SwiMainController extends Controller
             'cod_municipio' => (string) $item['cod_municipio'],
             'nomb_municipio' => (string) $item['nomb_municipio'],
             'grupo' => (string) $item['grupo'],
-            'zona' => (string) $item['zona'],           
+            'zona' => (string) $item['zona'],
             'cant_vend_d_punto_vent_kg' => isset($item['cant_vend_d_punto_vent_kg']) ? (int) $item['cant_vend_d_punto_vent_kg'] : null,
             'cant_vend_tanq_D_kg' => isset($item['cant_vend_tanq_D_kg']) ? (int) $item['cant_vend_tanq_D_kg'] : null,
             'cant_tot_vend_min_k' => isset($item['cant_tot_vend_min_k']) ? (int) $item['cant_tot_vend_min_k'] : null,
             'granel' => isset($item['granel']) ? (int) $item['granel'] : null,
-            'cilindros' => isset($item['cilindros']) ? (int) $item['cilindros'] : null,            
+            'cilindros' => isset($item['cilindros']) ? (int) $item['cilindros'] : null,
             'suma' => isset($item['suma']) ? (int) $item['suma'] : null,
-          
+
          ];
 
          // Guardar en la BD
          SwiMain::insert($registro);
-      } 
+      }
 
 
       return response()->json([
-         'status' => 'ok'       
+         'status' => 'ok'
       ]);
    }
 }
