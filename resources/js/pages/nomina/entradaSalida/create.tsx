@@ -31,11 +31,11 @@ interface Option {
     label: string;
 }
 
-export default function RegistroAsistencia({ ...props }) {
-    const { registro, isEdit } = usePage().props
-    // const [nombre, setNombre] = useState('');
-  
-    // console.log(registro);
+export default function RegistroAsistencia() {
+    const { registro, isEdit,auth } = usePage().props
+    const co = auth.user.co
+    console.log('centro op',co)
+
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: `${isEdit ? 'Actualizar' : 'Registrar'} Asistencia`,
@@ -50,7 +50,7 @@ export default function RegistroAsistencia({ ...props }) {
         // Función para obtener los datos de la base de datos
         const fetchData = async () => {
             try {
-                const response = await fetch('/cedulas-empleados'); // Cambia esta URL por la de tu API
+                const response = await fetch(`/cedulas-empleados/${co}`); // Cambia esta URL por la de tu API
                 const data = await response.json();
                 // console.log('data',data)
                 // Transformamos los datos para que coincidan con el formato de react-select

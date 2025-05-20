@@ -49,24 +49,27 @@ class Userseeder extends Seeder
     //     $userMedidor->assignRole($roleMedidor);
     //     $roleMedidor->syncPermissions(['ver medidores']);
 
-      Permission::create(['name' => 'ver asistencia']);
+//crear un permiso, usuario, role y asignarlo al usuario y al admin
+    //   Permission::create(['name' => 'ver asistencia']);
 
-        $userTalentoHumano = User::query()->create([
-            'name'=>'Adriana Maria Henao Valencia',
-            'email'=>'ahenao@clcgas.com.co',
-            'password'=>'12345678',
-            'email_verified_at'=>now()
-        ]);
+    //     $userTalentoHumano = User::query()->create([
+    //         'name'=>'Adriana Maria Henao Valencia',
+    //         'email'=>'ahenao@clcgas.com.co',
+    //         'password'=>'12345678',
+    //         'email_verified_at'=>now()
+    //     ]);
 
-        $roleTalentoHumano = Role::create(['name'=>'talento_humano']);
-        $userTalentoHumano->assignRole($roleTalentoHumano);
-        $roleTalentoHumano->syncPermissions(['ver asistencia']);
+    //     $roleTalentoHumano = Role::create(['name'=>'talento_humano']);
+    //     $userTalentoHumano->assignRole($roleTalentoHumano);
+    //     $roleTalentoHumano->syncPermissions(['ver asistencia']);
 
-        $role = Role::findByName('superAdmin');
-        $role->givePermissionTo('ver asistencia');
+    //     $role = Role::findByName('superAdmin');
+    //     $role->givePermissionTo('ver asistencia');
 
-      
-
+    //busca usuario por email y le agrego cedula
+    // $user = User::where('email', 'ahenao@clcgas.com.co')->first();
+    // $user->co = 'YUMBO';  
+    // $user->save();
 
     }
 }

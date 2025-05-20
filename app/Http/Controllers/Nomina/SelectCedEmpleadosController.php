@@ -12,12 +12,13 @@ class SelectCedEmpleadosController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke()
+    public function __invoke($centro)
     {
            $record = Empleado::select('id','cedula')
                    ->distinct()
                    ->where('estado', 'A')
                    ->whereNotNull('cedula')
+                   ->where('co', $centro)
                    ->get();
      
             return response()->json([

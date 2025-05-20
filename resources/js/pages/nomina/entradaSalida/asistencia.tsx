@@ -11,7 +11,7 @@ import {
 import AppLayout from "@/layouts/app-layout";
 import { BreadcrumbItem } from "@/types";
 import { Button, Input } from "@headlessui/react";
-import { Head,Link, router,useForm } from "@inertiajs/react";
+import { Head,Link, router,useForm, usePage } from "@inertiajs/react";
 import { CirclePlusIcon, Eye, Pencil, Trash2, X } from "lucide-react";
 import { useState } from "react";
 
@@ -60,6 +60,8 @@ interface IndexProps {
     filteredCount: number;
 }
 const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
+    // const {auth} = usePage().props
+    // console.log('cedula',auth.user.cedula)
      //pagination
     const { data, setData } = useForm({
         search: filters.search || '',

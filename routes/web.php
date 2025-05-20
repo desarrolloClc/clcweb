@@ -35,7 +35,7 @@ Route::group(['middleware' => ['permission:ver asistencia']], function () {
     Route::put('/asistencia/{id}', [AsistenciaController::class, 'update'])->name('asistencia.update');
     Route::delete('/asistencia/{id}', [AsistenciaController::class, 'destroy'])->name('asistencia.destroy');
     Route::get('asistencia/create',[AsistenciaController::class,'create'])->name('asistencia.create');   
-    Route::get('cedulas-empleados', SelectCedEmpleadosController::class);
+    Route::get('cedulas-empleados/{centroOperativo}', SelectCedEmpleadosController::class);
     Route::get('cedula-empleado', SelectedEmployedController::class);
 });
 

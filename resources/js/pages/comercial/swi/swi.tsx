@@ -84,7 +84,7 @@ const index = ({ records, filters, totalCount, filteredCount, rows }: IndexProps
         const datosSinId = rows.map(({ id, ...resto }:any) => resto);
         const ws = XLSX.utils.json_to_sheet(datosSinId, {
             header: ['mes', 'ano', 'cod_empresa', 'nomb_empresa', 'cod_dep', 'nomb_dep', 'cod_municipio', 'nomb_municipio', 'grupo', 'zona', 'cant_vend_d_punto_vent_kg', 'cant_vend_tanq_D_kg', 'cant_tot_vend_min_k', 'granel', 'cilindros', 'suma'
-            ], // Personaliza los encabezados
+            ],
         });
 
         const wb = XLSX.utils.book_new();
