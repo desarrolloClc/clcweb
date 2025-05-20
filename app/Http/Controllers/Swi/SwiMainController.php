@@ -65,8 +65,9 @@ class SwiMainController extends Controller
 
       $perPage = (int) ($request->perPage ?? 10);
 
+      
       # Fetch All the Records
-      if ($perPage === -1) {
+      if ($perPage === -1) {     
          $allrecords = $swiContent->latest()->get()->map(fn($record) => [
             'id'                           => $record->id,
             'mes'                           => $record->mes,
@@ -96,6 +97,9 @@ class SwiMainController extends Controller
             'links'    => [],
          ];
       } else {
+         
+         $rows = $swiContent->get();
+       
          $records = $swiContent->orderBy('ano')->paginate($perPage)->withQueryString();
          $records->getCollection()->transform(fn($record) => [
             'id'                           => $record->id,
@@ -123,6 +127,7 @@ class SwiMainController extends Controller
          'filters'       => $request->only(['search', 'perPage']),
          'totalCount'    => $totalCount,
          'filteredCount' => $filteredCount,
+         'rows' =>$rows
       ]);
    }
 

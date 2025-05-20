@@ -27,7 +27,7 @@ interface PaginationProps {
 
 
 export const Pagination = ({ projects, perPage, onPerPageChange, totalCount, filteredCount, search } : PaginationProps) => {
-     console.log('projects',projects.links)
+    
      projects.links[0].label = '&laquo; Anterior'
      const ultimaPag = projects.links[projects.links.length - 1];
      ultimaPag.label = 'Siguiente &raquo;'
