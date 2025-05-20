@@ -35,7 +35,7 @@ interface Project {
     cargo: string;
     co: string;
     fecha: string;
-    horaIni: string;
+    horaini: string;
     horafin: string;    
     justificacion: string;  
 }
@@ -176,7 +176,7 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
                                         <td className="border px-4 py-2 text-center">{record.cargo} </td>
                                         <td className="border px-4 py-2 text-center">{record.co} </td>
                                         <td className="border px-4 py-2 text-center">{record.fecha} </td>
-                                        <td className="border px-4 py-2 text-center">{record.horaIni} </td>                                    
+                                        <td className="border px-4 py-2 text-center">{record.horaini} </td>                                    
                                         <td className="border px-4 py-2 text-center">{record.horafin}</td>
                                         <td className="border px-4 py-2 text-center">{record.justificacion} </td>    
                                    

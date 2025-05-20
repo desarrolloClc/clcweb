@@ -43,7 +43,7 @@ class AsistenciaController extends Controller
                 'cargo'                        => $record->cargo,
                 'co'                           => $record->co,
                 'fecha'                        => $record->fecha,
-                'horaIni'                      => $record->horaIni,
+                'horaini'                      => $record->horaini,
                 'horafin'                      => $record->horafin,
                 'justificacion'                => $record->justificacion
             ]);
@@ -57,7 +57,7 @@ class AsistenciaController extends Controller
                 'links'    => [],
             ];
         } else {
-            $records = $asistencia->orderBy('fecha')->paginate($perPage)->withQueryString();
+            $records = $asistencia->orderBy('created_at', 'desc')->paginate($perPage)->withQueryString();
             $records->getCollection()->transform(fn($record) => [
                 'id'                           => $record->id,
                 'cedula'                       => $record->cedula,
@@ -65,7 +65,7 @@ class AsistenciaController extends Controller
                 'cargo'                        => $record->cargo,
                 'co'                           => $record->co,
                 'fecha'                        => $record->fecha,
-                'horaIni'                      => $record->horaIni,
+                'horaini'                      => $record->horaini,
                 'horafin'                      => $record->horafin,
                 'justificacion'                => $record->justificacion
             ]);
@@ -95,7 +95,8 @@ class AsistenciaController extends Controller
             'fecha' => 'required|date',
             'horaini' => 'required|string',
             'horafin' => 'required|string',
-            'justificacion' => 'string',
+            'justificacion' => 'string|nullable',
+          
         ], [
             'cedula.required'        => 'La cédula es obligatoria.',
             'nombre.required'        => 'El nombre es obligatorio.',
@@ -110,7 +111,7 @@ class AsistenciaController extends Controller
 
         ]);
 
-        Asistencia::insert($datos);
+        Asistencia::create($datos);
 
 
         return redirect()->route('asistencia.index')->with('success', 'Registro creado exitosamente.');
@@ -135,7 +136,8 @@ class AsistenciaController extends Controller
             'fecha' => 'required|date',
             'horaini' => 'required|string',
             'horafin' => 'required|string',
-            'justificacion' => 'string',
+            'justificacion' => 'string|nullable',
+          
         ], [
             'cedula.required'        => 'La cédula es obligatoria.',
             'nombre.required'        => 'El nombre es obligatorio.',
@@ -144,9 +146,9 @@ class AsistenciaController extends Controller
             'fecha.required'         => 'La fecha es obligatoria.',
             'fecha.date'             => 'La fecha no es válida.',
             'horaini.required'       => 'La hora de inicio es obligatoria.',
-            'horaini.date_format'    => 'La hora de inicio debe estar en formato HH:MM.',
+            // 'horaini.date_format'    => 'La hora de inicio debe estar en formato HH:MM.',
             'horafin.required'       => 'La hora de finalización es obligatoria.',
-            'horafin.date_format'    => 'La hora de finalización debe estar en formato HH:MM.',
+            // 'horafin.date_format'    => 'La hora de finalización debe estar en formato HH:MM.',
 
         ]);
         $asistencia = Asistencia::findOrFail($id);

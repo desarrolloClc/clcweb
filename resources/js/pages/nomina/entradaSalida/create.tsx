@@ -77,7 +77,7 @@ export default function RegistroAsistencia({ ...props }) {
         cargo: registro?.cargo || '',
         co: registro?.co || '',
         fecha: registro?.fecha || '',
-        horaini: registro?.horaIni || '',
+        horaini: registro?.horaini || '',
         horafin: registro?.horafin || '',
         justificacion: registro?.justificacion || '',
   

@@ -15,7 +15,7 @@ class Asistencia extends Model
         'cargo',
         'co',
         'fecha',
-        'horaIni',
+        'horaini',
         'horafin',
         'justificacion'      
     ];

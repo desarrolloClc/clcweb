@@ -11,9 +11,10 @@ import {
 import AppLayout from "@/layouts/app-layout";
 import { BreadcrumbItem } from "@/types";
 import { Button, Input } from "@headlessui/react";
-import { Head,Link, router,useForm } from "@inertiajs/react";
+import { Head, Link, router, useForm } from "@inertiajs/react";
 import { CirclePlusIcon, Eye, Pencil, Trash2, X } from "lucide-react";
 import { useState } from "react";
+import * as XLSX from 'xlsx';
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -33,19 +34,19 @@ interface Project {
     mes: string;
     ano: string;
     cod_empresa: string;
-    nomb_empresa: string;    
+    nomb_empresa: string;
     cod_dep: string;
     nomb_dep: string;
     cod_municipio: string;
-    nomb_municipio: string;  
+    nomb_municipio: string;
     grupo: string;
     zona: string;
     cant_vend_d_punto_vent_kg: number;
-    cant_vend_tanq_D_kg: number;  
-    cant_tot_vend_min_k: number;   
+    cant_vend_tanq_D_kg: number;
+    cant_tot_vend_min_k: number;
     granel: number;
-    cilindros: number;  
-    suma: number;  
+    cilindros: number;
+    suma: number;
 }
 
 interface ProjectPagination {
@@ -67,17 +68,30 @@ interface IndexProps {
     totalCount: number;
     filteredCount: number;
 }
-const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
-     //pagination
+const index = ({ records, filters, totalCount, filteredCount }: IndexProps) => {
+    //pagination
     const { data, setData } = useForm({
         search: filters.search || '',
         perPage: filters.perPage || '10',
     });
-    
-    console.log(data) 
-    console.log(records.data)
-    const [year,setYear] = useState('2025');
-    const [mesSui,setmesSui] = useState('');
+
+    // console.log(data) 
+    console.log('datos', records.data)
+
+    const exportToExcel = () => {
+        const datosSinId = records.data.map(({ id, ...resto }) => resto);
+        const ws = XLSX.utils.json_to_sheet(datosSinId, {
+            header: ['mes', 'ano', 'cod_empresa', 'nomb_empresa', 'cod_dep', 'nomb_dep', 'cod_municipio', 'nomb_municipio', 'grupo', 'zona', 'cant_vend_d_punto_vent_kg', 'cant_vend_tanq_D_kg', 'cant_tot_vend_min_k', 'granel', 'cilindros', 'suma'
+            ], // Personaliza los encabezados
+        });
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Filtered Records');
+        XLSX.writeFile(wb, 'filtered_records.xlsx');
+    };
+
+    const [year, setYear] = useState('2025');
+    const [mesSui, setmesSui] = useState('');
 
     // Handle Change for the Search Input
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,8 +111,8 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
         });
     };
 
-    const handleSelectChangeYear =(value:string)=>{
-      
+    const handleSelectChangeYear = (value: string) => {
+
         setYear(value)
         const queryString = {
             ...(value && { searchyear: value }),
@@ -109,11 +123,11 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
             preserveState: true,
             preserveScroll: true,
         });
-     
+
     }
 
-    const handleSelectChangeMes =(value:string)=>{
-      
+    const handleSelectChangeMes = (value: string) => {
+
         setmesSui(value)
         const queryString = {
             ...(value && { searchmesSui: value }),
@@ -125,7 +139,7 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
             preserveState: true,
             preserveScroll: true,
         });
-     
+
     }
 
     const handleReset = () => {
@@ -136,7 +150,7 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
         setmesSui('');
         const buscarElement = document.getElementById('buscar');
         if (buscarElement !== null) {
-        (buscarElement as HTMLInputElement).value = '';
+            (buscarElement as HTMLInputElement).value = '';
         }
 
         router.get(
@@ -163,30 +177,31 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
             preserveScroll: true,
         });
     };
-    
-  return (
-    <AppLayout breadcrumbs={breadcrumbs}>
-        <Head title="Swi Management" />
-        <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-              {/* Search inputs and button */}
-              <div className="mb-4 flex w-full items-center justify-between gap-4">
+
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Swi Management" />
+            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+                {/* Search inputs and button */}
+                <div className=" flex w-full items-center justify-between ">
+
                     <Input
                         type="text"
                         // value={data.search}
                         onChange={handleChange}
-                        className="h-10 w-1/3 border-input file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground flex min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                        className="h-10 w-125 border-input file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground flex min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                         placeholder="Buscar ..."
                         name="search"
                         id="buscar"
                     />
 
-                    <Button onClick={handleReset}  className="flex items-center justify-center h-10 w-30 cursor-pointer bg-gray-700 text-white place-content-center hover:bg-indigo-900 rounded">
+                    <Button onClick={handleReset} 
+                    className="flex items-center justify-center h-10 w-30 cursor-pointer bg-gray-700 text-white  hover:bg-indigo-900 rounded">
                         Borrar filtros
                     </Button>
 
-                    {/* Add Project button */}
-                    <div className="ml-auto">
-                      <div className="flex flex-col space-y-1.5">
+                                    
+                     <div className="flex flex-col space-y-1.5 mb-3">
                             <Label htmlFor="framework">Año</Label>
                             <Select onValueChange={handleSelectChangeYear} value={year} >
                                 <SelectTrigger id="framework">
@@ -206,11 +221,10 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
                                     <SelectItem value="2025">2025</SelectItem>
                                 </SelectContent>
                             </Select>
-                    
-                        </div>
-                    </div>
-                    <div className="ml-auto">
-                      <div className="flex flex-col space-y-1.5">
+
+                        </div>                    
+                  
+                        <div className="flex flex-col space-y-1.5 mb-3">
                             <Label htmlFor="framework">Mes</Label>
                             <Select onValueChange={handleSelectChangeMes} value={mesSui} >
                                 <SelectTrigger id="framework">
@@ -231,18 +245,22 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
                                     <SelectItem value="Dic">Dic</SelectItem>
                                 </SelectContent>
                             </Select>
-                    
+
                         </div>
-                    </div>
+                  
+                    <button className='bg-lime-700 text-white w-50 p-2 rounded-md font-black cursor-pointer' onClick={exportToExcel}>
+                        Exportar a Excel
+                    </button>
                 </div>
-                <h1 className="text-2xl text-center">Datos de la bd</h1>
+    
                 <div className="overflow-scroll rounded-lg border bg-white shadow-sm">
+                    <h1 className="text-2xl text-center mb-2 mt-2">Datos de la bd</h1>
                     <table className="w-full table-auto">
                         <thead>
                             <tr className="bg-pink-600 text-white">
                                 {/* <th className="w-25 border p-2">#</th> */}
                                 <th className="w-25 border p-2">Mes</th>
-                                <th className="w-25 border p-2">Año</th>                        
+                                <th className="w-25 border p-2">Año</th>
                                 <th className="border p-2">Cod. Empresa</th>
                                 <th className="border p-2">Empresa</th>
                                 <th className="border p-2">Cod. Dep</th>
@@ -257,7 +275,7 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
                                 <th className="border p-2">Granel</th>
                                 <th className="border p-2">Cilindros</th>
                                 <th className="border p-2">Suma</th>
-                               
+
                             </tr>
                         </thead>
 
@@ -268,22 +286,22 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
                                         {/* <td className="border px-4 py-2 text-center">{record.id}</td> */}
                                         <td className="border px-4 py-2 text-center">{record.mes} </td>
                                         <td className="border px-4 py-2 text-center">{record.ano} </td>
-                                        <td className="border px-4 py-2 text-center">{record.cod_empresa} </td>                                    
+                                        <td className="border px-4 py-2 text-center">{record.cod_empresa} </td>
                                         <td className="border px-4 py-2 text-center">{record.nomb_empresa}</td>
-                                        <td className="border px-4 py-2 text-center">{record.cod_dep} </td>    
-                                        <td className="border px-4 py-2 text-center">{record.nomb_dep} </td>    
-                                        <td className="border px-4 py-2 text-center">{record.cod_municipio}</td>                                
+                                        <td className="border px-4 py-2 text-center">{record.cod_dep} </td>
+                                        <td className="border px-4 py-2 text-center">{record.nomb_dep} </td>
+                                        <td className="border px-4 py-2 text-center">{record.cod_municipio}</td>
                                         <td className="border px-4 py-2 text-center">{record.nomb_municipio}</td>
-                                        <td className="border px-4 py-2 text-center">{record.grupo}</td>                                
+                                        <td className="border px-4 py-2 text-center">{record.grupo}</td>
                                         <td className="border px-4 py-2 text-center">{record.zona}</td>
-                                        <td className="border px-4 py-2 text-center">{record.cant_vend_d_punto_vent_kg} </td>    
-                                        <td className="border px-4 py-2 text-center">{record.cant_vend_tanq_D_kg} </td>    
-                                        <td className="border px-4 py-2 text-center">{record.cant_tot_vend_min_k}</td>                                
+                                        <td className="border px-4 py-2 text-center">{record.cant_vend_d_punto_vent_kg} </td>
+                                        <td className="border px-4 py-2 text-center">{record.cant_vend_tanq_D_kg} </td>
+                                        <td className="border px-4 py-2 text-center">{record.cant_tot_vend_min_k}</td>
                                         <td className="border px-4 py-2 text-center">{record.granel}</td>
-                                        <td className="border px-4 py-2 text-center">{record.cilindros}</td>                                
+                                        <td className="border px-4 py-2 text-center">{record.cilindros}</td>
                                         <td className="border px-4 py-2 text-center">{record.suma}</td>
                                         {/* <td className="w-40 border px-4 py-2 text-center"> */}
-                                            {/* <Link
+                                        {/* <Link
                                                 as="button"
                                                 className="cursor-pointer rounded-lg bg-sky-600 p-2 text-white hover:opacity-90"
                                                 href={route('projects.show', record.id)}
@@ -291,7 +309,7 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
                                                 <Eye size={18} />{' '}
                                             </Link> */}
 
-                                            {/* <Link
+                                        {/* <Link
                                                 as="button"
                                                 className="ms-2 cursor-pointer rounded-lg  bg-blue-600 p-2 text-white hover:opacity-90"
                                                 href={route('projects.edit', record.id)}
@@ -299,7 +317,7 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
                                                 <Pencil size={18} />{' '}
                                             </Link> */}
 
-                                            {/* <Button
+                                        {/* <Button
                                                 className="ms-2 cursor-pointer rounded-lg bg-red-600 p-2 text-white hover:opacity-90"
                                                 onClick={() => {
                                                     if (confirm('Are you sure you want to delete this project?')) {
@@ -323,12 +341,12 @@ const index = ({records,filters, totalCount, filteredCount}: IndexProps) => {
                             )}
                         </tbody>
                     </table>
-                </div>  
+                </div>
                 {/* Pagination */}
-                <Pagination projects={records} perPage={data.perPage} onPerPageChange={handlePerPageChange} totalCount={totalCount} filteredCount={filteredCount} search={data.search}  />
-        </div>
-    </AppLayout>
-  )
+                <Pagination projects={records} perPage={data.perPage} onPerPageChange={handlePerPageChange} totalCount={totalCount} filteredCount={filteredCount} search={data.search} />
+            </div>
+        </AppLayout>
+    )
 }
 
 export default index
