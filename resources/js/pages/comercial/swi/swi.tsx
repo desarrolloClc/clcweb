@@ -1,4 +1,3 @@
-import InputError from "@/components/input-error";
 import { Label } from "@/components/ui/label";
 import { Pagination } from "@/components/ui/pagination";
 import {
@@ -12,7 +11,6 @@ import AppLayout from "@/layouts/app-layout";
 import { BreadcrumbItem } from "@/types";
 import { Button, Input } from "@headlessui/react";
 import { Head, Link, router, useForm } from "@inertiajs/react";
-import { CirclePlusIcon, Eye, Pencil, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import * as XLSX from 'xlsx';
 
@@ -77,8 +75,8 @@ const index = ({ records, filters, totalCount, filteredCount, rows }: IndexProps
     });
 
     // console.log(data) 
-    console.log('datosIni', records.data)
-    console.log('rows',rows)
+    // console.log('datosIni', records.data)
+    // console.log('rows',rows)
 
     const exportToExcel = () => {
         const datosSinId = rows.map(({ id, ...resto }:any) => resto);

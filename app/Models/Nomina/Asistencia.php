@@ -14,9 +14,12 @@ class Asistencia extends Model
         'nombre',
         'cargo',
         'co',
-        'fecha',
+        'fechaIn',
+        'fechaSal',
         'horaini',
         'horafin',
-        'justificacion'      
+        'justificacion',
+        'Reduccion_HJL',
+        'tiempo_break'      
     ];
 }

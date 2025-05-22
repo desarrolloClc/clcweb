@@ -11,13 +11,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {
 
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import Select from 'react-select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
@@ -32,9 +26,9 @@ interface Option {
 }
 
 export default function RegistroAsistencia() {
-    const { registro, isEdit,auth } = usePage().props
+    const { registro, isEdit, auth } = usePage().props
     const co = auth.user.co
-    console.log('centro op',co)
+    console.log('centro op', co)
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -46,17 +40,28 @@ export default function RegistroAsistencia() {
     const [options, setOptions] = useState<Option[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
+      const opcionesTime = [
+        { value: 0.25, label: '15 min' },
+        { value: 0.5, label: '30 min' },
+        { value: 0.75, label: '45 min' },
+        { value: 1, label: '60 min' },
+        { value: 1.25, label: '75 min' },
+        { value: 1.5, label: '90 min' },
+        { value: 1.75, label: '105 min' },
+        { value: 2, label: '120 min' },
+  ];
+
     useEffect(() => {
-        // Función para obtener los datos de la base de datos
+       
         const fetchData = async () => {
             try {
-                const response = await fetch(`/cedulas-empleados/${co}`); // Cambia esta URL por la de tu API
+                const response = await fetch(`/cedulas-empleados/${co}`); 
                 const data = await response.json();
                 // console.log('data',data)
-                // Transformamos los datos para que coincidan con el formato de react-select
+              
                 const optionsData = data.response.map((item: any) => ({
-                    value: item.id,   
-                    label: item.cedula  
+                    value: item.id,
+                    label: item.cedula
                 }));
 
                 setOptions(optionsData);
@@ -76,35 +81,39 @@ export default function RegistroAsistencia() {
         nombre: registro?.nombre || '',
         cargo: registro?.cargo || '',
         co: registro?.co || '',
-        fecha: registro?.fecha || '',
+        fechaIn: registro?.fechaIn || '',
+        fechaSal: registro?.fechaSal || '',
         horaini: registro?.horaini || '',
         horafin: registro?.horafin || '',
         justificacion: registro?.justificacion || '',
-  
+        tiempo_break: registro?.tiempo_break || '',
+        Reduccion_HJL: registro?.Reduccion_HJL || '',
+
     })
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();    
-            console.log('data',data)            
-            if (isEdit) {
-                console.log(registro)
-                put(route('asistencia.update', registro.id), {             
-                    onSuccess: () => reset(),
-                });
-            } else {
-                post(route('asistencia.store'), {
-                    onSuccess: () => reset(),
-                });
-            }
+        e.preventDefault();
+        console.log('data', data)
+        if (isEdit) {
+            console.log(registro)
+            put(route('asistencia.update', registro.id), {
+                onSuccess: () => reset(),
+            });
+        } else {
+            post(route('asistencia.store'), {
+                onSuccess: () => reset(),
+            });
+        }
 
-          
+
 
     }
+   
     const selectedCed = (value: any) => {
         // console.log(value == null?'llego vacio':'lleno') 
         if (value != null) {
             console.log(value.label)
-            setData('cedula',value.label)
+            setData('cedula', value.label)
             axios.get('/cedula-empleado', {
                 params: {
                     ced: value.label
@@ -121,7 +130,7 @@ export default function RegistroAsistencia() {
                     // manejar error
                     console.log(error);
                 })
-        }else{            
+        } else {
             setData('nombre', '');
             setData('cargo', '');
             setData('co', '');
@@ -132,14 +141,17 @@ export default function RegistroAsistencia() {
         }
     }
 
-    const resetFormulario = () => {    
+    const resetFormulario = () => {
         setData('nombre', '');
         setData('cargo', '');
         setData('co', '');
-        setData('fecha', '');
+        setData('fechaIn', '');
+        setData('fechaSal', '');
         setData('horaini', '');
         setData('horafin', '');
         setData('justificacion', '');
+        setData('Reduccion_HJL', '');
+        setData('tiempo_break', '');
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -166,10 +178,10 @@ export default function RegistroAsistencia() {
                                             placeholder="Busca y selecciona..."
                                             id="cedula"
                                             name="cedula"
-                                            isClearable                                          
+                                            isClearable
                                         />
                                     )}
-                                    <InputError message={errors.cedula}/>
+                                    <InputError message={errors.cedula} />
                                 </div>
                                 <div className="flex flex-col space-y-1.5">
                                     <Label htmlFor="nombre">Nombre</Label>
@@ -181,18 +193,18 @@ export default function RegistroAsistencia() {
                                         value={data.nombre}
                                         onChange={(e) => setData('nombre', e.target.value)}
                                     />
-                                    <InputError message={errors.nombre}/>
+                                    <InputError message={errors.nombre} />
                                 </div>
                                 <div className="flex flex-col space-y-1.5">
                                     <Label htmlFor="cargo">Cargo</Label>
                                     <Input
                                         id="cargo"
                                         name="cargo"
-                                        placeholder="Cargo"                                       
+                                        placeholder="Cargo"
                                         value={data.cargo}
                                         onChange={(e) => setData('cargo', e.target.value)}
                                     />
-                                    <InputError message={errors.cargo}/>
+                                    <InputError message={errors.cargo} />
                                 </div>
 
                                 <div className="flex flex-col space-y-1.5">
@@ -200,23 +212,35 @@ export default function RegistroAsistencia() {
                                     <Input
                                         id="co"
                                         name="co"
-                                        placeholder="Centro Operativo"                                        
+                                        placeholder="Centro Operativo"
                                         value={data.co}
                                         onChange={(e) => setData('co', e.target.value)}
                                     />
-                                    <InputError message={errors.co}/>
+                                    <InputError message={errors.co} />
                                 </div>
-                                  <div className="flex flex-col space-y-1.5">
-                                    <Label htmlFor="fecha">Fecha</Label>
+                                <div className="flex flex-col space-y-1.5">
+                                    <Label htmlFor="fechaIn">Fecha Ingreso</Label>
                                     <input
-                                        id="fecha"
-                                        name="fecha"
+                                        id="fechaIn"
+                                        name="fechaIn"
+                                        type="date"
+                                        className="border-input file:text-foreground placeholder:text-muted-foreground border p-2 rounded-md"
+                                        value={data.fechaIn}
+                                        onChange={(e) => setData('fechaIn', e.target.value)}
+                                    />
+                                    <InputError message={errors.fechaIn} />
+                                </div>
+                                <div className="flex flex-col space-y-1.5">
+                                    <Label htmlFor="fechaSal">Fecha Salida</Label>
+                                    <input
+                                        id="fechaSal"
+                                        name="fechaSal"
                                         type="date" 
                                         className="border-input file:text-foreground placeholder:text-muted-foreground border p-2 rounded-md"                                      
-                                        value={data.fecha}
-                                        onChange={(e) => setData('fecha', e.target.value)}
+                                        value={data.fechaSal}
+                                        onChange={(e) => setData('fechaSal', e.target.value)}
                                     />
-                                    <InputError message={errors.fecha}/>
+                                    <InputError message={errors.fechaSal}/>
                                 </div>
 
                                 <div className="flex flex-col space-y-1.5">
@@ -224,55 +248,89 @@ export default function RegistroAsistencia() {
                                     <input
                                         id="horaini"
                                         name="horaini"
-                                        type="time" 
-                                         className="border-input file:text-foreground placeholder:text-muted-foreground border p-2 rounded-md"                                         
+                                        type="time"
+                                        className="border-input file:text-foreground placeholder:text-muted-foreground border p-2 rounded-md"
                                         value={data.horaini}
                                         onChange={(e) => setData('horaini', e.target.value)}
                                     />
-                                    <InputError message={errors.horaini}/>
+                                    <InputError message={errors.horaini} />
                                 </div>
-                                  <div className="flex flex-col space-y-1.5">
+                                <div className="flex flex-col space-y-1.5">
                                     <Label htmlFor="horafin">Hora Fin</Label>
                                     <input
                                         id="horafin"
                                         name="horafin"
-                                        type="time" 
-                                        className="border-input file:text-foreground placeholder:text-muted-foreground border p-2 rounded-md"                                  
+                                        type="time"
+                                        className="border-input file:text-foreground placeholder:text-muted-foreground border p-2 rounded-md"
                                         value={data.horafin}
                                         onChange={(e) => setData('horafin', e.target.value)}
                                     />
-                                    <InputError message={errors.horafin}/>
+                                    <InputError message={errors.horafin} />
+                                </div>
+                                <div className="flex flex-col space-y-1.5">
+                                    <h3>Tiempo break</h3>
+                                    {loading ? (
+                                        <p>Cargando...</p>
+                                    ) : (
+                                        <Select
+                                            options={opcionesTime}
+                                            onChange={e=> setData('tiempo_break',e?.value)}
+                                            value={opcionesTime.find(option => option.value === Number(data.tiempo_break)) || null}
+                                            placeholder="Selecciona..."
+                                            id="break"
+                                            name="break"
+                                            isClearable
+                                        />
+                                    )}
+                                    <InputError message={errors.tiempo_break} />
+                                </div>
+                                 <div className="flex flex-col space-y-1.5">
+                                    <h3>Reduccion HJL</h3>
+                                    {loading ? (
+                                        <p>Cargando...</p>
+                                    ) : (
+                                        <Select
+                                            options={opcionesTime}
+                                            onChange={e=> setData('Reduccion_HJL',e?.value)}
+                                            value={opcionesTime.find(option => option.value === Number(data.Reduccion_HJL)) || null}
+                                            placeholder="Selecciona..."
+                                            id="redhjl"
+                                            name="redhjl"
+                                            isClearable
+                                        />
+                                    )}
+                                    <InputError message={errors.Reduccion_HJL} />
                                 </div>
                                 <div className="flex flex-col space-y-1.5">
                                     <Label htmlFor="justificacion">Justificación</Label>
                                     <textarea
                                         id="justificacion"
                                         name="justificacion"
-                                        placeholder="Justificación"  
+                                        placeholder="Justificación"
                                         rows={3}
-                                        className="border-input file:text-foreground placeholder:text-muted-foreground border p-2 rounded-md"                                                                               
+                                        className="border-input file:text-foreground placeholder:text-muted-foreground border p-2 rounded-md"
                                         value={data.justificacion}
                                         onChange={(e) => setData('justificacion', e.target.value)}
                                     />
                                     {/* <InputError message={errors.justificacion}/> */}
                                 </div>
-                             
+
 
                             </div>
                             <CardFooter className="flex justify-start gap-2 mt-3">
                                 <Link
-                                    type="button" href={route('asistencia.index')}                               
+                                    type="button" href={route('asistencia.index')}
                                     className="p-2 px-5 rounded-md border border-input shadow-xs text-white bg-gray-700 hover:bg-gray-900"
-                                   >Atras</Link>
+                                >Atras</Link>
                                 <Button
                                     type="button"
-                                    onClick={resetFormulario}                                    
+                                    onClick={resetFormulario}
                                     className="bg-gray-100 hover:bg-gray-200 text-black"
                                 >Limpiar</Button>
-                                <Button 
-                                    type="submit" 
+                                <Button
+                                    type="submit"
                                     className=" hover:bg-pink-600 "
-                                    >
+                                >
                                     {`${isEdit ? 'Actualizar' : 'Guardar'}`}
                                 </Button>
                             </CardFooter>

@@ -24,7 +24,8 @@ class AsistenciaController extends Controller
             $asistencia->where(
                 fn($query) =>
                 $query->where('cedula', 'like', "%{$search}%")
-                    ->orWhere('fecha', 'like', "%{$search}%")
+                    ->orWhere('cargo', 'like', "%{$search}%")
+                    ->orWhere('nombre', 'like', "%{$search}%")
 
             );
         }
@@ -42,10 +43,13 @@ class AsistenciaController extends Controller
                 'nombre'                       => $record->nombre,
                 'cargo'                        => $record->cargo,
                 'co'                           => $record->co,
-                'fecha'                        => $record->fecha,
+                'fechaIn'                      => $record->fechaIn,
+                'fechaSal'                     => $record->fechaSal,
                 'horaini'                      => $record->horaini,
                 'horafin'                      => $record->horafin,
-                'justificacion'                => $record->justificacion
+                'justificacion'                => $record->justificacion,
+                'Reduccion_HJL'                => $record->Reduccion_HJL,
+                'tiempo_break'                 => $record->tiempo_break
             ]);
 
             $records = [
@@ -57,6 +61,7 @@ class AsistenciaController extends Controller
                 'links'    => [],
             ];
         } else {
+            $rows = $asistencia->get();
             $records = $asistencia->orderBy('created_at', 'desc')->paginate($perPage)->withQueryString();
             $records->getCollection()->transform(fn($record) => [
                 'id'                           => $record->id,
@@ -64,10 +69,13 @@ class AsistenciaController extends Controller
                 'nombre'                       => $record->nombre,
                 'cargo'                        => $record->cargo,
                 'co'                           => $record->co,
-                'fecha'                        => $record->fecha,
+                'fechaIn'                      => $record->fechaIn,
+                'fechaSal'                     => $record->fechaSal,
                 'horaini'                      => $record->horaini,
                 'horafin'                      => $record->horafin,
-                'justificacion'                => $record->justificacion
+                'justificacion'                => $record->justificacion,
+                'Reduccion_HJL'                => $record->Reduccion_HJL,
+                'tiempo_break'                 => $record->tiempo_break
             ]);
         }
         //   dd($records);
@@ -76,6 +84,7 @@ class AsistenciaController extends Controller
             'filters'       => $request->only(['search', 'perPage']),
             'totalCount'    => $totalCount,
             'filteredCount' => $filteredCount,
+            'rows' =>$rows
         ]);
     }
 
@@ -92,25 +101,30 @@ class AsistenciaController extends Controller
             'nombre' => 'required|string',
             'cargo' => 'required|string',
             'co' => 'required|string',
-            'fecha' => 'required|date',
+            'fechaIn' => 'required|date',
+            'fechaSal' => 'required|date',
             'horaini' => 'required|string',
             'horafin' => 'required|string',
             'justificacion' => 'string|nullable',
-          
+            'Reduccion_HJL' => 'nullable',
+            'tiempo_break' => 'nullable',
+
         ], [
             'cedula.required'        => 'La cédula es obligatoria.',
             'nombre.required'        => 'El nombre es obligatorio.',
             'cargo.required'         => 'El cargo es obligatorio.',
             'co.required'            => 'El centro operativo es obligatorio.',
-            'fecha.required'         => 'La fecha es obligatoria.',
-            'fecha.date'             => 'La fecha no es válida.',
+            'fechaIn.required'         => 'La fecha de ingreso es obligatoria.',
+            'fechaIn.date'             => 'La fecha no es válida.',
+            'fechaSal.required'         => 'La fecha de salida es obligatoria.',
+            'fechaSal.date'             => 'La fecha no es válida.',
             'horaini.required'       => 'La hora de inicio es obligatoria.',
             'horaini.date_format'    => 'La hora de inicio debe estar en formato HH:MM.',
             'horafin.required'       => 'La hora de finalización es obligatoria.',
             'horafin.date_format'    => 'La hora de finalización debe estar en formato HH:MM.',
 
         ]);
-
+    
         Asistencia::create($datos);
 
 
@@ -133,18 +147,23 @@ class AsistenciaController extends Controller
             'nombre' => 'required|string',
             'cargo' => 'required|string',
             'co' => 'required|string',
-            'fecha' => 'required|date',
+            'fechaIn' => 'required|date',
+            'fechaSal' => 'required|date',
             'horaini' => 'required|string',
             'horafin' => 'required|string',
             'justificacion' => 'string|nullable',
-          
+            'Reduccion_HJL' => 'nullable',
+            'tiempo_break' => 'nullable',
+
         ], [
             'cedula.required'        => 'La cédula es obligatoria.',
             'nombre.required'        => 'El nombre es obligatorio.',
             'cargo.required'         => 'El cargo es obligatorio.',
             'co.required'            => 'El centro operativo es obligatorio.',
-            'fecha.required'         => 'La fecha es obligatoria.',
-            'fecha.date'             => 'La fecha no es válida.',
+            'fechaIn.required'         => 'La fecha de ingreso es obligatoria.',
+            'fechaIn.date'             => 'La fecha no es válida.',
+            'fechaSal.required'         => 'La fecha de salida es obligatoria.',
+            'fechaSal.date'             => 'La fecha no es válida.',
             'horaini.required'       => 'La hora de inicio es obligatoria.',
             // 'horaini.date_format'    => 'La hora de inicio debe estar en formato HH:MM.',
             'horafin.required'       => 'La hora de finalización es obligatoria.',
@@ -153,12 +172,11 @@ class AsistenciaController extends Controller
         ]);
         $asistencia = Asistencia::findOrFail($id);
         $asistencia->update($validated);
-         return redirect()->route('asistencia.index')->with('success', 'se actualizo correctamente.');
-     
-      
+        return redirect()->route('asistencia.index')->with('success', 'se actualizo correctamente.');
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         $asistencia = Asistencia::findOrFail($id);
         $asistencia->delete();
         return redirect()->route('asistencia.index')->with('success', 'se elimino correctamente.');
